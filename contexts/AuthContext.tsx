@@ -1,7 +1,7 @@
 import {useRouter} from "next/router";
 import {setCookie, parseCookies, destroyCookie} from "nookies";
 import {createContext, ReactNode, useEffect, useState} from "react";
-import {api, signOut} from "../services/api";
+import {api} from "../services/apiClient";
 
 type User = {
   email: string;
@@ -31,6 +31,12 @@ export function AuthProvider({children}: AuthProviderProps) {
 
   const router = useRouter();
   const isAuthenticated = !!user;
+
+  function signOut() {
+    destroyCookie(undefined, "nextauth.token");
+    destroyCookie(undefined, "nextauth.refreshToken");
+    router.push("/");
+  }
 
   useEffect(() => {
     const {"nextauth.token": token} = parseCookies();
